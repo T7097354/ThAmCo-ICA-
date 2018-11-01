@@ -62,9 +62,16 @@ namespace ThAmCo.Events.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(guestBooking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if(!GuestBookingExists(guestBooking.CustomerId))
+                {
+                    _context.Add(guestBooking);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    Console.WriteLine("Guest Booking already Exists");
+                }
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", guestBooking.CustomerId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", guestBooking.EventId);
