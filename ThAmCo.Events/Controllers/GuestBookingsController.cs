@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -62,7 +63,7 @@ namespace ThAmCo.Events.Controllers
         {
             if (ModelState.IsValid)
             {
-                if(!GuestBookingExists(guestBooking.CustomerId))
+                if(!GuestBookingExists(guestBooking.CustomerId, guestBooking.EventId))
                 {
                     _context.Add(guestBooking);
                     await _context.SaveChangesAsync();
@@ -70,7 +71,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 else
                 {
-                    Console.WriteLine("Guest Booking already Exists");
+                    Debug.WriteLine("Guest Booking already Exists");
                 }
             }
             ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", guestBooking.CustomerId);
@@ -117,7 +118,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!GuestBookingExists(guestBooking.CustomerId))
+                    if (!GuestBookingExists(guestBooking.CustomerId, guestBooking.EventId))
                     {
                         return NotFound();
                     }
@@ -164,9 +165,16 @@ namespace ThAmCo.Events.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool GuestBookingExists(int id)
+        private bool GuestBookingExists(int custId, int eventId)
         {
-            return _context.Guests.Any(e => e.CustomerId == id);
+            foreach(GuestBooking booking in _context.Guests)
+            {
+                if(booking.CustomerId == custId && booking.EventId == eventId)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
