@@ -21,7 +21,8 @@ namespace ThAmCo.Events.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
-            return View(await _context.Events.ToListAsync());
+            var eventGuestsDbContext = _context.Events.Include(g => g.Bookings);
+            return View(await eventGuestsDbContext.ToListAsync());
         }
 
         // GET: Events/Details/5
@@ -33,6 +34,7 @@ namespace ThAmCo.Events.Controllers
             }
 
             var @event = await _context.Events
+                .Include(g => g.Bookings)
                 .FirstOrDefaultAsync(m => m.Id == id);
             if (@event == null)
             {
