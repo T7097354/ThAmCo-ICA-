@@ -25,6 +25,26 @@ namespace ThAmCo.Events.Controllers
             return View(await eventGuestsDbContext.ToListAsync());
         }
 
+        // GET: Events/EventBookings
+        public async Task<IActionResult> EventBookings(int? id)
+        {
+            if (id == null)
+            {
+                return NotFound();
+            }
+            
+            var @event = await _context.Events
+                .Include(g => g.Bookings)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            if (@event == null)
+            {
+                return NotFound();
+            }
+
+            return View(@event);
+        }
+
         // GET: Events/Details/5
         public async Task<IActionResult> Details(int? id)
         {
@@ -34,8 +54,8 @@ namespace ThAmCo.Events.Controllers
             }
 
             var @event = await _context.Events
-                .Include(g => g.Bookings)
                 .FirstOrDefaultAsync(m => m.Id == id);
+
             if (@event == null)
             {
                 return NotFound();
