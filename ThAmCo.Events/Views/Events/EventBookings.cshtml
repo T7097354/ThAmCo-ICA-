@@ -1,4 +1,4 @@
-﻿@model ThAmCo.Events.Data.Event
+﻿@model List<ThAmCo.Events.Data.GuestBooking>;
 
 @{
     ViewData["Title"] = "EventBookings";
@@ -9,7 +9,35 @@
 <div>
     <h4>Event</h4>
     <hr />
-    <dl class="dl-horizontal">
+
+    <div class="row">
+        <div class="col-md-9">
+            <form asp-action="EventBookings">
+                <div asp-validation-summary="ModelOnly" class="text-danger"></div>
+                <div class="form-group">
+                    @foreach (var item in Model)
+                    {
+                        <input type="hidden" asp-for="@item.CustomerId" />
+                        <input type="hidden" asp-for="@item.EventId" />
+                        <label>
+                            <p>
+                                <input asp-for="@item.Customer.FirstName" class="form-control col-md-3" style="width:25%" readonly />
+                                <input asp-for="@item.Customer.Surname" class="form-control col-md-3" style="width:25%" readonly /><br />
+                                <div>
+                                    @Html.DisplayNameFor(m => item.Attended): <input asp-for="@item.Attended" />
+                                </div>
+                            </p>
+                        </label>
+                    }
+                </div>
+                <div class="form-group">
+                    <input type="submit" value="Save" class="btn btn-default" />
+                </div>
+            </form>
+        </div>
+    </div>
+
+    @*<dl class="dl-horizontal">
         <dt>
             @Html.DisplayNameFor(model => model.Title)
         </dt>
@@ -27,12 +55,17 @@
         </dt>
         @foreach (var item in Model.Bookings)
         {
-        <dd>
-            @Html.DisplayFor(model => item.CustomerId) | 
-            Attended: @Html.DisplayFor(model => item.Attended)
-        </dd>
+            <form asp-action="EventBookings">
+                <dd>
+                    @Html.DisplayFor(model => item.Customer.FirstName) @Html.DisplayFor(model => item.Customer.Surname) |
+                    Attended: @Html.EditorFor(model => item.Attended)
+                </dd>
+            </form>
         }
-    </dl>
+        <div class="form-group">
+            <input type="submit" value="Save" class="btn btn-default" />
+        </div>
+    </dl>*@
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
