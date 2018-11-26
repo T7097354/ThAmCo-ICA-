@@ -25,63 +25,7 @@ namespace ThAmCo.Events.Controllers
                 .Include(g => g.Bookings);
             return View(await eventGuestsDbContext.ToListAsync());
         }
-
-        // GET: Events/EventBookings
-        public async Task<IActionResult> EventBookings(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
-            var @event = await _context.Events
-                .Include(g => g.Bookings)
-                .ThenInclude(c => c.Customer)
-                .FirstOrDefaultAsync(m => m.Id == id);
-
-            if (@event == null)
-            {
-                return NotFound();
-            }
-
-            return View(@event.Bookings);
-        }
-
-        // POST: Events/EventBookings/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> EventBookings(int id, [Bind("CustomerId,Customer,EventId,Event,Attended")] GuestBooking @event)
-        {
-            if (id != @event.EventId)
-            {
-                return NotFound();
-            }
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(@event);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!EventExists(@event.EventId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            return View(@event);
-        }
-
+                
         // GET: Events/Details/5
         public async Task<IActionResult> Details(int? id)
         {
