@@ -19,14 +19,10 @@
                     {
                         <input type="hidden" asp-for="@item.CustomerId" />
                         <input type="hidden" asp-for="@item.EventId" />
-                        <label>
-                            <p>
-                                <input asp-for="@item.Customer.FirstName" class="form-control col-md-3" style="width:25%" readonly />
-                                <input asp-for="@item.Customer.Surname" class="form-control col-md-3" style="width:25%" readonly /><br />
-                                <div>
-                                    @Html.DisplayNameFor(m => item.Attended): <input asp-for="@item.Attended" />
-                                </div>
-                            </p>
+                        <label style="display:block">
+                            <div>
+                                @Html.DisplayFor(model => item.Customer.FirstName) @Html.DisplayFor(model => item.Customer.Surname) | @Html.DisplayNameFor(m => item.Attended): <input asp-for="@item.Attended" />
+                            </div>
                         </label>
                     }
                 </div>
@@ -36,36 +32,6 @@
             </form>
         </div>
     </div>
-
-    @*<dl class="dl-horizontal">
-        <dt>
-            @Html.DisplayNameFor(model => model.Title)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Title)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Date)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Date)
-        </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Bookings)
-        </dt>
-        @foreach (var item in Model.Bookings)
-        {
-            <form asp-action="EventBookings">
-                <dd>
-                    @Html.DisplayFor(model => item.Customer.FirstName) @Html.DisplayFor(model => item.Customer.Surname) |
-                    Attended: @Html.EditorFor(model => item.Attended)
-                </dd>
-            </form>
-        }
-        <div class="form-group">
-            <input type="submit" value="Save" class="btn btn-default" />
-        </div>
-    </dl>*@
 </div>
 <div>
     <a asp-action="Index">Back to List</a>
