@@ -18,12 +18,20 @@ namespace ThAmCo.Events.Controllers
         {
             _context = context;
         }
-
+        
         // GET: GuestBookings
         public async Task<IActionResult> Index(int? id)
         {
-            var eventsDbContext = _context.Guests.Include(g => g.Customer).Include(g => g.Event).Where(e => e.EventId == id);
-            return View(await eventsDbContext.ToListAsync());
+            if (id == null)
+            {
+                var eventsDbContext = _context.Guests.Include(g => g.Customer).Include(g => g.Event);
+                return View(await eventsDbContext.OrderBy(a => a.EventId).ToListAsync());
+            }
+            else
+            {
+                var eventsDbContext = _context.Guests.Include(g => g.Customer).Include(g => g.Event).Where(e => e.EventId == id);
+                return View(await eventsDbContext.ToListAsync());
+            }
         }
 
         // GET: GuestBookings/Details/5

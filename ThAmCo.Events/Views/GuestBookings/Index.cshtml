@@ -31,7 +31,7 @@
                 @Html.DisplayFor(modelItem => item.Customer.Email)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.Event.Title)
+                <a asp-area="" asp-route-id="@item.EventId" asp-controller="Events" asp-action="Details">@Html.DisplayFor(modelItem => item.Event.Title)</a>
             </td>
             <td>
                 @Html.DisplayFor(modelItem => item.Attended)

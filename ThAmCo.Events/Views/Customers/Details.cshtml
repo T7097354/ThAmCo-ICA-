@@ -28,7 +28,19 @@
         <dd>
             @Html.DisplayFor(model => model.Email)
         </dd>
-    </dl>
+        <dt>
+            @Html.DisplayNameFor(model => model.Bookings)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Bookings.Count)
+        </dd>
+        @foreach (var item in Model.Bookings)
+        {
+            <dd>
+                @Html.DisplayFor(e => item.Event.Title) | Attended: @Html.DisplayFor(e => item.Attended)
+            </dd>
+        }
+        </dl>
 </div>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
