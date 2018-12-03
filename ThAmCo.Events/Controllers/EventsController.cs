@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
 using ThAmCo.Events.Data;
+using ThAmCo.Events.Models;
 
 namespace ThAmCo.Events.Controllers
 {
@@ -39,8 +40,19 @@ namespace ThAmCo.Events.Controllers
                 throw new Exception();
             }
 
+            response = await client.GetAsync("api/reservations");
+
             var eventGuestsDbContext = _context.Events
-                .Include(g => g.Bookings);
+                .Include(g => g.Bookings)
+                .Select(g => new EventsViewModel {
+                    Id = g.Id,
+                    Title = g.Title,
+                    Date = g.Date,
+                    Duration = g.Duration,
+                    TypeId = g.TypeId,
+                    Bookings = g.Bookings,
+                    TypeValue = eventTypeInfo.Where(h => h.id == g.TypeId).Select(n => n.title).FirstOrDefault()
+                });
 
             return View(await eventGuestsDbContext.ToListAsync());
         }
@@ -65,8 +77,26 @@ namespace ThAmCo.Events.Controllers
         }
 
         // GET: Events/Create
-        public IActionResult Create()
+        public async Task<IActionResult> Create()
         {
+            var eventTypeInfo = new List<EventDto>().AsEnumerable();
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("http://localhost:23652/");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+            HttpResponseMessage response = await client.GetAsync("api/eventtypes");
+
+            if (response.IsSuccessStatusCode)
+            {
+                eventTypeInfo = await response.Content.ReadAsAsync<IEnumerable<EventDto>>();
+            }
+            else
+            {
+                throw new Exception();
+            }
+
+            ViewData["TypeId"] = new SelectList(eventTypeInfo.ToList(), "id", "title");
             return View();
         }
 

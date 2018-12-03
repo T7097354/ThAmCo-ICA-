@@ -1,4 +1,4 @@
-﻿@model IEnumerable<ThAmCo.Events.Data.Event>
+﻿@model IEnumerable<ThAmCo.Events.Models.EventsViewModel>
 
 @{
     ViewData["Title"] = "Index";
@@ -16,7 +16,7 @@
                 @Html.DisplayNameFor(model => model.Title)
             </th>
             <th>
-                
+                Venue
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Date)
@@ -25,7 +25,7 @@
                 @Html.DisplayNameFor(model => model.Duration)
             </th>
             <th>
-                @Html.DisplayNameFor(model => model.TypeId)
+                @Html.DisplayNameFor(model => model.TypeValue)
             </th>
             <th>
                 @Html.DisplayNameFor(model => model.Bookings)
@@ -49,7 +49,7 @@
                 @Html.DisplayFor(modelItem => item.Duration)
             </td>
             <td>
-                @Html.DisplayFor(modelItem => item.TypeId)
+                @Html.DisplayFor(modelItem => item.TypeValue)
             </td>
             <td>
                 <a asp-action="Index" asp-controller="GuestBookings" asp-route-id="@item.Id">@Html.DisplayFor(modelItem => item.Bookings.Count)</a>
