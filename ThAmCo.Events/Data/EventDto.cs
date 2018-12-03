@@ -6,9 +6,10 @@ using System.Threading.Tasks;
 
 namespace ThAmCo.Events.Data
 {
-    public class EventTypeDto
+    public class EventDto
     {
-        public string Id { get; set; }
-        public string Title { get; set; }
+        public int TypeID { get; set; }
+
+        public string TypeName { get; set; }
     }
 }

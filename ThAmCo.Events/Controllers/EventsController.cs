@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Net.Http;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
@@ -21,8 +22,26 @@ namespace ThAmCo.Events.Controllers
         // GET: Events
         public async Task<IActionResult> Index()
         {
+            var eventTypeInfo = new List<EventDto>().AsEnumerable();
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("http://localhost:23652/");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+            HttpResponseMessage response = await client.GetAsync("api/eventtypes");
+
+            if (response.IsSuccessStatusCode)
+            {
+                eventTypeInfo = await response.Content.ReadAsAsync<IEnumerable<EventDto>>();
+            }
+            else
+            {
+                throw new Exception();
+            }
+
             var eventGuestsDbContext = _context.Events
                 .Include(g => g.Bookings);
+
             return View(await eventGuestsDbContext.ToListAsync());
         }
                 
