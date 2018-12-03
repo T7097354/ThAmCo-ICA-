@@ -28,20 +28,40 @@
         <dd>
             @Html.DisplayFor(model => model.Email)
         </dd>
-        <dt>
-            @Html.DisplayNameFor(model => model.Bookings)
-        </dt>
-        <dd>
-            @Html.DisplayFor(model => model.Bookings.Count)
-        </dd>
+    </dl>
+</div>
+<hr />
+<h3>Events Booked: (@Html.DisplayFor(b => b.Bookings.Count))</h3>
+<hr />
+<table class="table">
+    <thead>
+        <tr>
+            <th>
+                Event
+            </th>
+            <th>
+                Attended
+            </th>
+            <th></th>
+        </tr>
+    </thead>
+    <tbody>
         @foreach (var item in Model.Bookings)
         {
-            <dd>
-                @Html.DisplayFor(e => item.Event.Title) | Attended: @Html.DisplayFor(e => item.Attended)
-            </dd>
+            <tr>
+                <td>
+                    <a asp-area="" asp-route-id="@item.EventId" asp-controller="Events" asp-action="Details">@Html.DisplayFor(modelItem => item.Event.Title)</a>
+                </td>
+                <td>
+                    @Html.DisplayFor(modelItem => item.Attended)
+                </td>
+                <td>
+                    @Html.ActionLink("Details", "Details", "GuestBookings", new { id = item.EventId, id2 = item.CustomerId }, null)
+                </td>
+            </tr>
         }
-        </dl>
-</div>
+    </tbody>
+</table>
 <div>
     <a asp-action="Edit" asp-route-id="@Model.Id">Edit</a> |
     <a asp-action="Index">Back to List</a>

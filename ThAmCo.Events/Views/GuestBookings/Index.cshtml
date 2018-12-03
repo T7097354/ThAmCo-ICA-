@@ -4,7 +4,7 @@
     ViewData["Title"] = "Index";
 }
 
-<h2>Index</h2>
+<h2>Guest Bookings</h2>
 
 <p>
     <a asp-action="Create">Create New</a>
@@ -37,9 +37,9 @@
                 @Html.DisplayFor(modelItem => item.Attended)
             </td>
             <td>
-                @Html.ActionLink("Edit", "Edit", new {id = item.EventId}) |
-                @Html.ActionLink("Details", "Details", new { /* id=item.PrimaryKey */ }) |
-                @Html.ActionLink("Delete", "Delete", new { /* id=item.PrimaryKey */ })
+                @Html.ActionLink("Edit", "Edit", new {id = item.EventId, id2 = item.CustomerId}) |
+                @Html.ActionLink("Details", "Details", new {id=item.EventId, id2 = item.CustomerId }) |
+                @Html.ActionLink("Delete", "Delete", new {id=item.EventId, id2 = item.CustomerId })
             </td>
         </tr>
 }

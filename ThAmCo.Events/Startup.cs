@@ -58,7 +58,7 @@ namespace ThAmCo.Events
             {
                 routes.MapRoute(
                     name: "default",
-                    template: "{controller=Events}/{action=Index}/{id?}");
+                    template: "{controller=Events}/{action=Index}/{id?}/{id2?}");
             });
         }
     }
