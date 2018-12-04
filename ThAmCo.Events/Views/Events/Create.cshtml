@@ -19,25 +19,27 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" />
+                <input asp-for="Date" class="form-control" id="inputDate"/>
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" />
+                <input asp-for="Duration" class="form-control" id="inputDuration"/>
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TypeId" class="control-label"></label>
-                <select asp-for="TypeId" class="form-control" asp-items="ViewBag.TypeId" onchange="TypeChange()" ></select>
+                <select asp-for="TypeId" class="form-control" asp-items="ViewBag.TypeId">
+                    <option value="" disabled selected hidden>Please select an event type.</option>
+                </select>
 				<span asp-validation-for="TypeId" class="text-danger"></span>
             </div>
 			<div class="form-group">
                 <label asp-for="VenueCode" class="control-label"></label>
-                <select asp-for="VenueCode" class="form-control" disabled></select>
+                <select asp-for="VenueCode" class="form-control"></select>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default"/>
+                <input type="submit" value="Create" class="btn btn-default" disabled/>
             </div>
         </form>
     </div>
@@ -50,28 +52,22 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-	/*<script type="text/javascript">
-		$(document).ready(function() {
-			TypeChange();
-		});
-
-		function TypeChange() {
-			$.ajax({
-				url: "http://localhost:23652/api/Availability?eventType=" + $('#typeSelect').val() + "?beginDate=" + ,
-				type: "GET",
-				crossDomain: true,
-				success: function(result) {
-					$('#venueSelect').html('');
-					var options = '';
-					for (var i = 0; i < result.length; i++) {
-						options += '<option value="' + result[i].VenueCode + '">' + result[i].Venue.Name + '</option>';
-					}
-					$('#venueSelect').append(options);
-				},
-				error: function() {
-					alert("Unable to load available venues.");
-				}
-			})
+	@*<script type="text/javascript">
+        function TypeChange() {
+            $.ajax({
+                url: "http://localhost:23652/api/Reservations/", //reservations/data + venuecode
+                method: "GET",
+                crossDomain: true,
+                success: function (response) {
+                    var options = '';
+                    for (var i = 0; i < response.length; i++) {
+                        options += '<option value=""></option>';
+                    }
+                },
+                error: function () {
+                    alert("Data was not retrieved successfully.");
+                }
+            });
 		}
-	</script>*/
+	</script>*@
 }

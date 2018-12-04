@@ -23,7 +23,9 @@ namespace ThAmCo.Events.Models
 
         public List<GuestBooking> Bookings { get; set; }
 
-        [Display(Name = "Venue")]
         public string VenueCode { get; set; }
+
+        [Display(Name = "Venue")]
+        public string VenueValue { get; set; }
     }
 }
