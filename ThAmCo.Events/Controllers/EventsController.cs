@@ -40,8 +40,6 @@ namespace ThAmCo.Events.Controllers
                 throw new Exception();
             }
 
-            response = await client.GetAsync("api/reservations");
-
             var eventGuestsDbContext = _context.Events
                 .Include(g => g.Bookings)
                 .Select(g => new EventsViewModel {
@@ -80,6 +78,7 @@ namespace ThAmCo.Events.Controllers
         public async Task<IActionResult> Create()
         {
             var eventTypeInfo = new List<EventDto>().AsEnumerable();
+            var venueInfo = new List<VenueDto>().AsEnumerable();
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new System.Uri("http://localhost:23652/");
@@ -96,7 +95,7 @@ namespace ThAmCo.Events.Controllers
                 throw new Exception();
             }
 
-            ViewData["TypeId"] = new SelectList(eventTypeInfo.ToList(), "id", "title");
+            ViewData["TypeId"] = new SelectList(eventTypeInfo.ToList(), "id", "title", eventTypeInfo.Select(h => h.id == "CON"));
             return View();
         }
 

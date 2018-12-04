@@ -1,4 +1,4 @@
-﻿@model ThAmCo.Events.Data.Event
+﻿@model ThAmCo.Events.Models.EventsCreateViewModel
 
 @{
     ViewData["Title"] = "Create";
@@ -29,7 +29,12 @@
             </div>
             <div class="form-group">
                 <label asp-for="TypeId" class="control-label"></label>
-                <select asp-for="TypeId" class="form-control" asp-items="ViewBag.TypeId"></select>
+                <select asp-for="TypeId" class="form-control" asp-items="ViewBag.TypeId" onchange="TypeChange()" ></select>
+				<span asp-validation-for="TypeId" class="text-danger"></span>
+            </div>
+			<div class="form-group">
+                <label asp-for="VenueCode" class="control-label"></label>
+                <select asp-for="VenueCode" class="form-control" disabled></select>
             </div>
             <div class="form-group">
                 <input type="submit" value="Create" class="btn btn-default"/>
@@ -44,4 +49,29 @@
 
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
+
+	/*<script type="text/javascript">
+		$(document).ready(function() {
+			TypeChange();
+		});
+
+		function TypeChange() {
+			$.ajax({
+				url: "http://localhost:23652/api/Availability?eventType=" + $('#typeSelect').val() + "?beginDate=" + ,
+				type: "GET",
+				crossDomain: true,
+				success: function(result) {
+					$('#venueSelect').html('');
+					var options = '';
+					for (var i = 0; i < result.length; i++) {
+						options += '<option value="' + result[i].VenueCode + '">' + result[i].Venue.Name + '</option>';
+					}
+					$('#venueSelect').append(options);
+				},
+				error: function() {
+					alert("Unable to load available venues.");
+				}
+			})
+		}
+	</script>*/
 }

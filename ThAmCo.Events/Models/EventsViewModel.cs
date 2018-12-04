@@ -18,11 +18,12 @@ namespace ThAmCo.Events.Models
 
         public TimeSpan? Duration { get; set; }
 
-        [Required, MaxLength(3), MinLength(3)]
+        [Required]
         public string TypeId { get; set; }
 
         public List<GuestBooking> Bookings { get; set; }
 
+        [Display(Name = "Event Type")]
         public string TypeValue { get; set; }
     }
 }
