@@ -1,4 +1,4 @@
-﻿@model ThAmCo.Events.Models.EventsCreateViewModel
+﻿@model ThAmCo.Events.Data.Event
 
 @{
     ViewData["Title"] = "Create";
@@ -19,27 +19,27 @@
             </div>
             <div class="form-group">
                 <label asp-for="Date" class="control-label"></label>
-                <input asp-for="Date" class="form-control" id="inputDate"/>
+                <input asp-for="Date" class="form-control" id="inputDate" />
                 <span asp-validation-for="Date" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="Duration" class="control-label"></label>
-                <input asp-for="Duration" class="form-control" id="inputDuration"/>
+                <input asp-for="Duration" class="form-control" id="inputDuration" />
                 <span asp-validation-for="Duration" class="text-danger"></span>
             </div>
             <div class="form-group">
                 <label asp-for="TypeId" class="control-label"></label>
-                <select asp-for="TypeId" class="form-control" asp-items="ViewBag.TypeId">
+                <select asp-for="TypeId" class="form-control" asp-items="ViewBag.TypeId" onchange="TypeChange()" id="selectType">
                     <option value="" disabled selected hidden>Please select an event type.</option>
                 </select>
-				<span asp-validation-for="TypeId" class="text-danger"></span>
-            </div>
-			<div class="form-group">
-                <label asp-for="VenueCode" class="control-label"></label>
-                <select asp-for="VenueCode" class="form-control"></select>
+                <span asp-validation-for="TypeId" class="text-danger"></span>
             </div>
             <div class="form-group">
-                <input type="submit" value="Create" class="btn btn-default" disabled/>
+                <label for="VenueCode" class="control-label"></label>
+                <select class="form-control" id="venueCode" disabled></select>
+            </div>
+            <div class="form-group">
+                <input type="submit" value="Create" class="btn btn-default"/>
             </div>
         </form>
     </div>
@@ -52,22 +52,25 @@
 @section Scripts {
     @{await Html.RenderPartialAsync("_ValidationScriptsPartial");}
 
-	@*<script type="text/javascript">
+    <script type="text/javascript">
         function TypeChange() {
+            var selectedType = document.getElementById('selectType').value;
+            var selectedDate = document.getElementById('inputDate').value.substring(0, document.getElementById('inputDate').value.indexOf('T')).replace(/-/g, '/');
             $.ajax({
-                url: "http://localhost:23652/api/Reservations/", //reservations/data + venuecode
+                url: "getVenues?eventCode=" + selectedType + "&datePassed=" + selectedDate,
                 method: "GET",
-                crossDomain: true,
                 success: function (response) {
                     var options = '';
                     for (var i = 0; i < response.length; i++) {
-                        options += '<option value=""></option>';
+                        options += '<option value="' + response[i].code + '">' + response[i].name + '</option>';
                     }
+                    document.getElementById('venueCode').innerHTML = options;
                 },
                 error: function () {
                     alert("Data was not retrieved successfully.");
                 }
             });
-		}
-	</script>*@
+            $('#venueCode').prop('disabled', false);
+        }
+        </script>
 }

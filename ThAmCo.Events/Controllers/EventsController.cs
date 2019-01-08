@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
 using System.Linq;
 using System.Net.Http;
@@ -41,6 +42,19 @@ namespace ThAmCo.Events.Controllers
                 throw new Exception();
             }
 
+            var reservationDto = new List<ReservationGetDto>().AsEnumerable();
+
+            response = await client.GetAsync("api/Reservations/");
+
+            if (response.IsSuccessStatusCode)
+            {
+                reservationDto = await response.Content.ReadAsAsync<IEnumerable<ReservationGetDto>>();
+            }
+            //else
+            //{
+            //    throw new Exception();
+            //}
+
             var eventGuestsDbContext = _context.Events
                 .Include(g => g.Bookings)
                 .Select(g => new EventsViewModel {
@@ -50,7 +64,8 @@ namespace ThAmCo.Events.Controllers
                     Duration = g.Duration,
                     TypeId = g.TypeId,
                     Bookings = g.Bookings,
-                    TypeValue = eventTypeInfo.Where(h => h.id == g.TypeId).Select(n => n.title).FirstOrDefault()
+                    TypeValue = eventTypeInfo.Where(h => h.id == g.TypeId).Select(n => n.title).FirstOrDefault(),
+                    //VenueCode = reservationDto.FirstOrDefault().VenueCode
                 });
 
             return View(await eventGuestsDbContext.ToListAsync());
@@ -79,7 +94,6 @@ namespace ThAmCo.Events.Controllers
         public async Task<IActionResult> Create()
         {
             var eventTypeInfo = new List<EventDto>().AsEnumerable();
-            var venueInfo = new List<VenueDto>().AsEnumerable();
 
             HttpClient client = new HttpClient();
             client.BaseAddress = new System.Uri("http://localhost:23652/");
@@ -111,9 +125,40 @@ namespace ThAmCo.Events.Controllers
             {
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
+            
+                HttpContent content = new StringContent(String.Empty);
+
+                HttpClient client = new HttpClient();
+                client.BaseAddress = new System.Uri("http://localhost:23652/");
+                client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+                HttpResponseMessage response = await client.PostAsync("api/Reservations", content);
+
                 return RedirectToAction(nameof(Index));
             }
+
             return View(@event);
+        }
+
+        public async Task<IEnumerable<VenueDto>> getVenues([FromQuery, MinLength(3), MaxLength(3), Required] string eventCode, [FromQuery, Required] string datePassed)
+        {
+            var eventTypeInfo = new List<VenueDto>().AsEnumerable();
+
+            HttpClient client = new HttpClient();
+            client.BaseAddress = new System.Uri("http://localhost:23652/");
+            client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
+
+            HttpResponseMessage response = await client.GetAsync("api/Availability?eventType=" + eventCode + "&beginDate=" + datePassed + "&endDate=" + datePassed);
+
+            if (response.IsSuccessStatusCode)
+            {
+                eventTypeInfo = await response.Content.ReadAsAsync<IEnumerable<VenueDto>>();
+            }
+            else
+            {
+                throw new Exception();
+            }
+            
+            return eventTypeInfo;
         }
 
         // GET: Events/Edit/5

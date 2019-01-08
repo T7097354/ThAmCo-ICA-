@@ -7,8 +7,8 @@ namespace ThAmCo.Events.Data
 {
     public class VenueDto
     {
-        public string VenueCode { get; set; }
+        public string code { get; set; }
 
-        public string VenueName { get; set; }
+        public string name { get; set; }
     }
 }
