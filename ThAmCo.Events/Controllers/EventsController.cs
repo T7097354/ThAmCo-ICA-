@@ -42,19 +42,6 @@ namespace ThAmCo.Events.Controllers
                 throw new Exception();
             }
 
-            var reservationDto = new List<ReservationGetDto>().AsEnumerable();
-
-            response = await client.GetAsync("api/Reservations/");
-
-            if (response.IsSuccessStatusCode)
-            {
-                reservationDto = await response.Content.ReadAsAsync<IEnumerable<ReservationGetDto>>();
-            }
-            //else
-            //{
-            //    throw new Exception();
-            //}
-
             var eventGuestsDbContext = _context.Events
                 .Include(g => g.Bookings)
                 .Select(g => new EventsViewModel {
@@ -65,7 +52,7 @@ namespace ThAmCo.Events.Controllers
                     TypeId = g.TypeId,
                     Bookings = g.Bookings,
                     TypeValue = eventTypeInfo.Where(h => h.id == g.TypeId).Select(n => n.title).FirstOrDefault(),
-                    //VenueCode = reservationDto.FirstOrDefault().VenueCode
+                    VenueCode = g.VenueCode
                 });
 
             return View(await eventGuestsDbContext.ToListAsync());
@@ -119,15 +106,19 @@ namespace ThAmCo.Events.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Date,Duration,TypeId")] Event @event)
+        public async Task<IActionResult> Create([Bind("Id,Title,Date,Duration,TypeId,VenueCode")] Event @event)
         {
             if (ModelState.IsValid)
             {
                 _context.Add(@event);
                 await _context.SaveChangesAsync();
-            
-                HttpContent content = new StringContent(String.Empty);
 
+                var content = new FormUrlEncodedContent(
+                    new List<KeyValuePair<string, string>>
+                    {
+                        new KeyValuePair<string, string>("reference",@event.VenueCode + @event.Date)
+                    }
+                );
                 HttpClient client = new HttpClient();
                 client.BaseAddress = new System.Uri("http://localhost:23652/");
                 client.DefaultRequestHeaders.Accept.ParseAdd("application/json");

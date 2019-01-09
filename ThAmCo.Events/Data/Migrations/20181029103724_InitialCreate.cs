@@ -37,7 +37,8 @@ namespace ThAmCo.Events.Data.Migrations
                     Title = table.Column<string>(nullable: false),
                     Date = table.Column<DateTime>(nullable: false),
                     Duration = table.Column<TimeSpan>(nullable: true),
-                    TypeId = table.Column<string>(fixedLength: true, maxLength: 3, nullable: false)
+                    TypeId = table.Column<string>(fixedLength: true, maxLength: 3, nullable: false),
+                    VenueCode = table.Column<string>(fixedLength: true, maxLength: 5, nullable: false)
                 },
                 constraints: table =>
                 {
@@ -86,11 +87,11 @@ namespace ThAmCo.Events.Data.Migrations
             migrationBuilder.InsertData(
                 schema: "thamco.events",
                 table: "Events",
-                columns: new[] { "Id", "Date", "Duration", "Title", "TypeId" },
+                columns: new[] { "Id", "Date", "Duration", "Title", "TypeId", "VenueCode" },
                 values: new object[,]
                 {
-                    { 1, new DateTime(2016, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 6, 0, 0, 0), "Bob's Big 50", "PTY" },
-                    { 2, new DateTime(2018, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 12, 0, 0, 0), "Best Wedding Yet", "WED" }
+                    { 1, new DateTime(2016, 4, 12, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 6, 0, 0, 0), "Bob's Big 50", "PTY", "CRKHL"},
+                    { 2, new DateTime(2018, 12, 1, 0, 0, 0, 0, DateTimeKind.Unspecified), new TimeSpan(0, 12, 0, 0, 0), "Best Wedding Yet", "WED", "FDLCK" }
                 });
 
             migrationBuilder.InsertData(

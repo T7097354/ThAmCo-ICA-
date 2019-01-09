@@ -26,7 +26,7 @@ namespace ThAmCo.Events.Models
         [Display(Name = "Event Type")]
         public string TypeValue { get; set; }
 
-        [Display(Name = "Venue")]
+        [Display(Name = "Venue Code")]
         public string VenueCode { get; set; }
     }
 }
