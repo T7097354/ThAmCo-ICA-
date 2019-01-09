@@ -31,7 +31,6 @@
             <a asp-area="" asp-route-id="@item.EventId" asp-controller="Events" asp-action="Details">@Html.DisplayFor(modelItem => item.Event.Title)</a>
         </td>
         <td>
-            @Html.ActionLink("Edit", "Edit", new {id = item.EventId, id2 = item.StaffId}) |
             @Html.ActionLink("Details", "Details", new {id=item.EventId, id2 = item.StaffId }) |
             @Html.ActionLink("Delete", "Delete", new {id=item.EventId, id2 = item.StaffId })
         </td>

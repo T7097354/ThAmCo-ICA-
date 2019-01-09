@@ -93,82 +93,19 @@ namespace ThAmCo.Events.Controllers
             return View(staffBooking);
         }
 
-        // GET: StaffBookings/Edit/5
-        public async Task<IActionResult> Edit(int? id, int? id2)
+        // GET: StaffBookings/Delete/5
+        public async Task<IActionResult> Delete(int? id, int? id2)
         {
             if (id == null || id2 == null)
             {
                 return NotFound();
             }
 
-            var staffBooking = await _context.StaffBooking.FindAsync(id2, id);
-            if (staffBooking == null)
-            {
-                return NotFound();
-            }
-            ViewData["StaffId"] = new SelectList((from s in _context.Staff
-                    select new
-                    {
-                        Id = s.Id,
-                        FullName = s.FirstName + " " + s.Surname
-                    }),
-                "Id",
-                "FullName", staffBooking.StaffId);
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
-            return View(staffBooking);
-        }
-
-        // POST: StaffBookings/Edit/5
-        // To protect from overposting attacks, please enable the specific properties you want to bind to, for 
-        // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
-        [HttpPost]
-        [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, int id2, [Bind("StaffId,EventId")] StaffBooking staffBooking)
-        {
-
-            if (ModelState.IsValid)
-            {
-                try
-                {
-                    _context.Update(staffBooking);
-                    await _context.SaveChangesAsync();
-                }
-                catch (DbUpdateConcurrencyException)
-                {
-                    if (!StaffBookingExists(staffBooking.StaffId, staffBooking.EventId))
-                    {
-                        return NotFound();
-                    }
-                    else
-                    {
-                        throw;
-                    }
-                }
-                return RedirectToAction(nameof(Index));
-            }
-            ViewData["StaffId"] = new SelectList((from s in _context.Staff
-                    select new
-                    {
-                        Id = s.Id,
-                        FullName = s.FirstName + " " + s.Surname
-                    }),
-                "Id",
-                "FullName", staffBooking.StaffId);
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
-            return View(staffBooking);
-        }
-
-        // GET: StaffBookings/Delete/5
-        public async Task<IActionResult> Delete(int? id)
-        {
-            if (id == null)
-            {
-                return NotFound();
-            }
-
             var staffBooking = await _context.StaffBooking
+                .Include(s => s.Staff)
                 .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.StaffId == id);
+                .Where(e => e.EventId == id)
+                .FirstOrDefaultAsync(m => m.StaffId == id2);
             if (staffBooking == null)
             {
                 return NotFound();
@@ -180,9 +117,9 @@ namespace ThAmCo.Events.Controllers
         // POST: StaffBookings/Delete/5
         [HttpPost, ActionName("Delete")]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> DeleteConfirmed(int id)
+        public async Task<IActionResult> DeleteConfirmed(int id, int id2)
         {
-            var staffBooking = await _context.StaffBooking.FindAsync(id);
+            var staffBooking = await _context.StaffBooking.FindAsync(id2, id);
             _context.StaffBooking.Remove(staffBooking);
             await _context.SaveChangesAsync();
             return RedirectToAction(nameof(Index));
