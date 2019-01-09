@@ -35,15 +35,28 @@ namespace ThAmCo.Events.Data
             builder.Entity<GuestBooking>()
                    .HasKey(b => new { b.CustomerId, b.EventId });
 
+            builder.Entity<StaffBooking>()
+                .HasKey(b => new { b.StaffId, b.EventId });
+
             builder.Entity<Customer>()
                    .HasMany(c => c.Bookings)
                    .WithOne(b => b.Customer)
                    .HasForeignKey(b => b.CustomerId);
 
+            builder.Entity<Staff>()
+                .HasMany(c => c.Bookings)
+                .WithOne(b => b.Staff)
+                .HasForeignKey(b => b.StaffId);
+
             builder.Entity<Event>()
                    .HasMany(e => e.Bookings)
                    .WithOne(b => b.Event)
                    .HasForeignKey(b => b.EventId);
+
+            builder.Entity<Event>()
+                .HasMany(e => e.StaffBookings)
+                .WithOne(b => b.Event)
+                .HasForeignKey(b => b.EventId);
 
             builder.Entity<Event>()
                    .Property(e => e.TypeId)

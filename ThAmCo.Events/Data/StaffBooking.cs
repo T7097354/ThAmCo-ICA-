@@ -8,7 +8,6 @@ namespace ThAmCo.Events.Data
 {
     public class StaffBooking
     {
-        [Key]
         public int StaffId { get; set; }
 
         public Staff Staff { get; set; }
