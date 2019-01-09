@@ -44,6 +44,7 @@ namespace ThAmCo.Events.Controllers
 
             var eventGuestsDbContext = _context.Events
                 .Include(g => g.Bookings)
+                .Include(sb => sb.StaffBookings)
                 .Select(g => new EventsViewModel {
                     Id = g.Id,
                     Title = g.Title,
