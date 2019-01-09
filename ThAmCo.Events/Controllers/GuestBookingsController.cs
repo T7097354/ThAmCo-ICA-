@@ -50,7 +50,14 @@ namespace ThAmCo.Events.Controllers
         // GET: GuestBookings/Create
         public IActionResult Create()
         {
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email");
+            ViewData["CustomerId"] = new SelectList((from c in _context.Customers
+                    select new
+                    {
+                        Id = c.Id,
+                        FullName = c.FirstName + " " + c.Surname
+                    }),
+                "Id",
+                "FullName");
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title");
             return View();
         }
@@ -75,7 +82,14 @@ namespace ThAmCo.Events.Controllers
                     Debug.WriteLine("Guest Booking already Exists");
                 }
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", guestBooking.CustomerId);
+            ViewData["CustomerId"] = new SelectList((from c in _context.Customers
+                    select new
+                    {
+                        Id = c.Id,
+                        FullName = c.FirstName + " " + c.Surname
+                    }),
+                "Id",
+                "FullName", guestBooking.CustomerId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", guestBooking.EventId);
             return View(guestBooking);
         }
@@ -93,7 +107,14 @@ namespace ThAmCo.Events.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", guestBooking.CustomerId);
+            ViewData["CustomerId"] = new SelectList((from c in _context.Customers
+                    select new
+                    {
+                        Id = c.Id,
+                        FullName = c.FirstName + " " + c.Surname
+                    }),
+                "Id",
+                "FullName", guestBooking.CustomerId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", guestBooking.EventId);
             return View(guestBooking);
         }
@@ -130,7 +151,14 @@ namespace ThAmCo.Events.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
-            ViewData["CustomerId"] = new SelectList(_context.Customers, "Id", "Email", guestBooking.CustomerId);
+            ViewData["CustomerId"] = new SelectList((from c in _context.Customers
+                    select new
+                    {
+                        Id = c.Id,
+                        FullName = c.FirstName + " " + c.Surname
+                    }),
+                "Id",
+                "FullName", guestBooking.CustomerId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", guestBooking.EventId);
             return View(guestBooking);
         }

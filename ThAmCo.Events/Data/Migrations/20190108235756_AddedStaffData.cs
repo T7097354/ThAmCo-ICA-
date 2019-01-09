@@ -28,13 +28,12 @@ namespace ThAmCo.Events.Data.Migrations
                 schema: "thamco.events",
                 columns: table => new
                 {
-                    StaffId = table.Column<int>(nullable: false)
-                        .Annotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn),
+                    StaffId = table.Column<int>(nullable: false),
                     EventId = table.Column<int>(nullable: false)
                 },
                 constraints: table =>
                 {
-                    table.PrimaryKey("PK_StaffBooking", x => x.StaffId);
+                    table.PrimaryKey("PK_StaffBooking", x => new { x.StaffId, x.EventId });
                     table.ForeignKey(
                         name: "FK_StaffBooking_Events_EventId",
                         column: x => x.EventId,
@@ -48,7 +47,7 @@ namespace ThAmCo.Events.Data.Migrations
                         principalSchema: "thamco.events",
                         principalTable: "Staff",
                         principalColumn: "Id",
-                        onDelete: ReferentialAction.Restrict);
+                        onDelete: ReferentialAction.Cascade);
                 });
 
             migrationBuilder.CreateIndex(
@@ -57,11 +56,11 @@ namespace ThAmCo.Events.Data.Migrations
                 table: "StaffBooking",
                 column: "EventId");
 
-            migrationBuilder.CreateIndex(
-                name: "IX_StaffBooking_StaffId",
-                schema: "thamco.events",
-                table: "StaffBooking",
-                column: "StaffId");
+            //migrationBuilder.CreateIndex(
+            //    name: "IX_StaffBooking_StaffId",
+            //    schema: "thamco.events",
+            //    table: "StaffBooking",
+            //    column: "StaffId");
         }
 
         protected override void Down(MigrationBuilder migrationBuilder)

@@ -7,9 +7,15 @@
 <h2>Details</h2>
 
 <div>
-    <h4>StaffBooking</h4>
+    <h4>Staff Booking Details</h4>
     <hr />
     <dl class="dl-horizontal">
+        <dt>
+            @Html.DisplayNameFor(model => model.Staff)
+        </dt>
+        <dd>
+            @Html.DisplayFor(model => model.Staff.FirstName) @Html.DisplayFor(model => model.Staff.Surname)
+        </dd>
         <dt>
             @Html.DisplayNameFor(model => model.Event)
         </dt>
@@ -19,6 +25,6 @@
     </dl>
 </div>
 <div>
-    <a asp-action="Edit" asp-route-id="@Model.StaffId">Edit</a> |
+    @Html.ActionLink("Edit", "Edit", new { id = Model.EventId, id2 = Model.StaffId }) |
     <a asp-action="Index">Back to List</a>
 </div>

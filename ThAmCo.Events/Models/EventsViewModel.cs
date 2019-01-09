@@ -23,6 +23,8 @@ namespace ThAmCo.Events.Models
 
         public List<GuestBooking> Bookings { get; set; }
 
+        public List<StaffBooking> StaffBookings { get; set; }
+
         [Display(Name = "Event Type")]
         public string TypeValue { get; set; }
 

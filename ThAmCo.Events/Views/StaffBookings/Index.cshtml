@@ -13,6 +13,9 @@
     <thead>
         <tr>
             <th>
+                @Html.DisplayNameFor(model => model.Staff)
+            </th>
+            <th>
                 @Html.DisplayNameFor(model => model.Event)
             </th>
             <th></th>
@@ -20,16 +23,19 @@
     </thead>
     <tbody>
 @foreach (var item in Model) {
-        <tr>
-            <td>
-                @Html.DisplayFor(modelItem => item.Event.Title)
-            </td>
-            <td>
-                <a asp-action="Edit" asp-route-id="@item.StaffId">Edit</a> |
-                <a asp-action="Details" asp-route-id="@item.StaffId">Details</a> |
-                <a asp-action="Delete" asp-route-id="@item.StaffId">Delete</a>
-            </td>
-        </tr>
+    <tr>
+        <td>
+            @Html.DisplayFor(modelItem => item.Staff.FirstName) @Html.DisplayFor(modelItem => item.Staff.Surname)
+        </td>
+        <td>
+            <a asp-area="" asp-route-id="@item.EventId" asp-controller="Events" asp-action="Details">@Html.DisplayFor(modelItem => item.Event.Title)</a>
+        </td>
+        <td>
+            @Html.ActionLink("Edit", "Edit", new {id = item.EventId, id2 = item.StaffId}) |
+            @Html.ActionLink("Details", "Details", new {id=item.EventId, id2 = item.StaffId }) |
+            @Html.ActionLink("Delete", "Delete", new {id=item.EventId, id2 = item.StaffId })
+        </td>
+    </tr>
 }
     </tbody>
 </table>

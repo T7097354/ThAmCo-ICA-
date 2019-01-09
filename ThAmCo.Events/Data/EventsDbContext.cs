@@ -44,7 +44,7 @@ namespace ThAmCo.Events.Data
                    .HasForeignKey(b => b.CustomerId);
 
             builder.Entity<Staff>()
-                .HasMany(c => c.Bookings)
+                .HasMany(c => c.StaffBookings)
                 .WithOne(b => b.Staff)
                 .HasForeignKey(b => b.StaffId);
 

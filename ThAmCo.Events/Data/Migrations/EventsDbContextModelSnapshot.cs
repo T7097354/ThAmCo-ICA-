@@ -119,13 +119,11 @@ namespace ThAmCo.Events.Data.Migrations
 
             modelBuilder.Entity("ThAmCo.Events.Data.StaffBooking", b =>
                 {
-                    b.Property<int>("StaffId")
-                        .ValueGeneratedOnAdd()
-                        .HasAnnotation("SqlServer:ValueGenerationStrategy", SqlServerValueGenerationStrategy.IdentityColumn);
+                    b.Property<int>("StaffId");
 
                     b.Property<int>("EventId");
 
-                    b.HasKey("StaffId");
+                    b.HasKey("StaffId", "EventId");
 
                     b.HasIndex("EventId");
 

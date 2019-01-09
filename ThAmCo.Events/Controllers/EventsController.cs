@@ -52,7 +52,8 @@ namespace ThAmCo.Events.Controllers
                     TypeId = g.TypeId,
                     Bookings = g.Bookings,
                     TypeValue = eventTypeInfo.Where(h => h.id == g.TypeId).Select(n => n.title).FirstOrDefault(),
-                    VenueCode = g.VenueCode
+                    VenueCode = g.VenueCode,
+                    StaffBookings = g.StaffBookings
                 });
 
             return View(await eventGuestsDbContext.ToListAsync());

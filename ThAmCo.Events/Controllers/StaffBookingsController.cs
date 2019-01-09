@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
@@ -22,20 +23,22 @@ namespace ThAmCo.Events.Controllers
         public async Task<IActionResult> Index(int? id)
         {
             var eventsDbContext = (id == null) ? _context.StaffBooking.Include(g => g.Staff).Include(g => g.Event) : _context.StaffBooking.Include(g => g.Staff).Include(g => g.Event).Where(e => e.EventId == id);
-            return View(await eventsDbContext.ToListAsync());
+            return View(await eventsDbContext.OrderBy(a => a.EventId).ToListAsync());
         }
 
         // GET: StaffBookings/Details/5
-        public async Task<IActionResult> Details(int? id)
+        public async Task<IActionResult> Details(int? id, int? id2)
         {
-            if (id == null)
+            if (id == null || id2 == null)
             {
                 return NotFound();
             }
 
             var staffBooking = await _context.StaffBooking
+                .Include(s => s.Staff)
                 .Include(s => s.Event)
-                .FirstOrDefaultAsync(m => m.StaffId == id);
+                .Where(e => e.EventId == id)
+                .FirstOrDefaultAsync(m => m.StaffId == id2);
             if (staffBooking == null)
             {
                 return NotFound();
@@ -47,6 +50,13 @@ namespace ThAmCo.Events.Controllers
         // GET: StaffBookings/Create
         public IActionResult Create()
         {
+            ViewData["StaffId"] = new SelectList((from s in _context.Staff select new
+            {
+                Id = s.Id,
+                FullName = s.FirstName + " " + s.Surname
+            }),
+                "Id",
+                    "FullName");
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title");
             return View();
         }
@@ -60,27 +70,50 @@ namespace ThAmCo.Events.Controllers
         {
             if (ModelState.IsValid)
             {
-                _context.Add(staffBooking);
-                await _context.SaveChangesAsync();
-                return RedirectToAction(nameof(Index));
+                if (!StaffBookingExists(staffBooking.StaffId, staffBooking.EventId))
+                {
+                    _context.Add(staffBooking);
+                    await _context.SaveChangesAsync();
+                    return RedirectToAction(nameof(Index));
+                }
+                else
+                {
+                    Debug.WriteLine("Guest Booking already Exists");
+                }
             }
+            ViewData["StaffId"] = new SelectList((from s in _context.Staff
+                    select new
+                    {
+                        Id = s.Id,
+                        FullName = s.FirstName + " " + s.Surname
+                    }),
+                "Id",
+                "FullName", staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
 
         // GET: StaffBookings/Edit/5
-        public async Task<IActionResult> Edit(int? id)
+        public async Task<IActionResult> Edit(int? id, int? id2)
         {
-            if (id == null)
+            if (id == null || id2 == null)
             {
                 return NotFound();
             }
 
-            var staffBooking = await _context.StaffBooking.FindAsync(id);
+            var staffBooking = await _context.StaffBooking.FindAsync(id2, id);
             if (staffBooking == null)
             {
                 return NotFound();
             }
+            ViewData["StaffId"] = new SelectList((from s in _context.Staff
+                    select new
+                    {
+                        Id = s.Id,
+                        FullName = s.FirstName + " " + s.Surname
+                    }),
+                "Id",
+                "FullName", staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
@@ -90,12 +123,8 @@ namespace ThAmCo.Events.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("StaffId,EventId")] StaffBooking staffBooking)
+        public async Task<IActionResult> Edit(int id, int id2, [Bind("StaffId,EventId")] StaffBooking staffBooking)
         {
-            if (id != staffBooking.StaffId)
-            {
-                return NotFound();
-            }
 
             if (ModelState.IsValid)
             {
@@ -106,7 +135,7 @@ namespace ThAmCo.Events.Controllers
                 }
                 catch (DbUpdateConcurrencyException)
                 {
-                    if (!StaffBookingExists(staffBooking.StaffId))
+                    if (!StaffBookingExists(staffBooking.StaffId, staffBooking.EventId))
                     {
                         return NotFound();
                     }
@@ -117,6 +146,14 @@ namespace ThAmCo.Events.Controllers
                 }
                 return RedirectToAction(nameof(Index));
             }
+            ViewData["StaffId"] = new SelectList((from s in _context.Staff
+                    select new
+                    {
+                        Id = s.Id,
+                        FullName = s.FirstName + " " + s.Surname
+                    }),
+                "Id",
+                "FullName", staffBooking.StaffId);
             ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", staffBooking.EventId);
             return View(staffBooking);
         }
@@ -151,9 +188,16 @@ namespace ThAmCo.Events.Controllers
             return RedirectToAction(nameof(Index));
         }
 
-        private bool StaffBookingExists(int id)
+        private bool StaffBookingExists(int sId, int eId)
         {
-            return _context.StaffBooking.Any(e => e.StaffId == id);
+            foreach (StaffBooking booking in _context.StaffBooking)
+            {
+                if (booking.StaffId == sId && booking.EventId == eId)
+                {
+                    return true;
+                }
+            }
+            return false;
         }
     }
 }
