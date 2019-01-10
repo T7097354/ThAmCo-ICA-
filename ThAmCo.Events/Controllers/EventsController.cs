@@ -2,12 +2,16 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
+using System.Net;
 using System.Net.Http;
+using System.Text;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.Mvc.Rendering;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
 using ThAmCo.Events.Data;
 using ThAmCo.Events.Models;
 
@@ -100,6 +104,14 @@ namespace ThAmCo.Events.Controllers
             }
 
             ViewData["TypeId"] = new SelectList(eventTypeInfo.ToList(), "id", "title", eventTypeInfo.Select(h => h.id == "CON"));
+            ViewData["StaffId"] = new SelectList((from s in _context.Staff
+                    select new
+                    {
+                        Id = s.Id,
+                        FullName = s.FirstName + " " + s.Surname
+                    }),
+                "Id",
+                "FullName");
             return View();
         }
 
@@ -108,23 +120,34 @@ namespace ThAmCo.Events.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Create([Bind("Id,Title,Date,Duration,TypeId,VenueCode")] Event @event)
+        public async Task<IActionResult> Create([Bind("Id,Title,Date,Duration,TypeId,VenueCode,StaffId")] EventsCreateViewModel @event)
         {
             if (ModelState.IsValid)
             {
-                _context.Add(@event);
+                Event tempEvent = new Event
+                {
+                    Id = @event.Id,
+                    Title = @event.Title,
+                    Date = @event.Date,
+                    Duration = @event.Duration,
+                    TypeId = @event.TypeId,
+                    VenueCode = @event.VenueCode
+                };
+
+                ReservationPostDto resDto = new ReservationPostDto
+                {
+                    EventDate = @event.Date.Date,
+                    VenueCode = @event.VenueCode,
+                    StaffId = @event.StaffId.ToString()
+                };
+
+                _context.Add(tempEvent);
                 await _context.SaveChangesAsync();
 
-                var content = new FormUrlEncodedContent(
-                    new List<KeyValuePair<string, string>>
-                    {
-                        new KeyValuePair<string, string>("reference",@event.VenueCode + @event.Date)
-                    }
-                );
                 HttpClient client = new HttpClient();
-                client.BaseAddress = new System.Uri("http://localhost:23652/");
-                client.DefaultRequestHeaders.Accept.ParseAdd("application/json");
-                HttpResponseMessage response = await client.PostAsync("api/Reservations", content);
+                var response = client.PostAsync("http://localhost:23652/api/Reservations", new StringContent(JsonConvert.SerializeObject(resDto), Encoding.UTF8, "application/json"));
+
+                Debug.WriteLine(await response.Result.Content.ReadAsStringAsync());
 
                 return RedirectToAction(nameof(Index));
             }
@@ -175,7 +198,7 @@ namespace ThAmCo.Events.Controllers
         // more details see http://go.microsoft.com/fwlink/?LinkId=317598.
         [HttpPost]
         [ValidateAntiForgeryToken]
-        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Date,Duration,TypeId")] Event @event)
+        public async Task<IActionResult> Edit(int id, [Bind("Id,Title,Date,Duration,TypeId,VenueCode")] Event @event)
         {
             if (id != @event.Id)
             {

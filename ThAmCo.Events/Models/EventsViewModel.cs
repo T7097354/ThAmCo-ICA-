@@ -11,18 +11,20 @@ namespace ThAmCo.Events.Models
     {
         public int Id { get; set; }
 
-        [Required]
+        [Required, Display(Name = "Event Name")]
         public string Title { get; set; }
 
         public DateTime Date { get; set; }
 
         public TimeSpan? Duration { get; set; }
 
-        [Required]
+        [Required, Display(Name = "Event Type")]
         public string TypeId { get; set; }
 
+        [Display(Name = "Guest Bookings")]
         public List<GuestBooking> Bookings { get; set; }
 
+        [Display(Name = "Staff Bookings")]
         public List<StaffBooking> StaffBookings { get; set; }
 
         [Display(Name = "Event Type")]

@@ -14,6 +14,7 @@ namespace ThAmCo.Events.Models
         [Required, Display(Name = "Event Name")]
         public string Title { get; set; }
 
+        [Required]
         public DateTime Date { get; set; }
 
         public TimeSpan? Duration { get; set; }
@@ -21,9 +22,10 @@ namespace ThAmCo.Events.Models
         [Required, Display(Name = "Event Type")]
         public string TypeId { get; set; }
 
-        public List<GuestBooking> Bookings { get; set; }
-
-        [Display(Name = "Venue")]
+        [Required, Display(Name = "Venue Name")]
         public string VenueCode { get; set; }
+
+        [Required(ErrorMessage = "Make sure you have created at least one staff member before trying to create an event!"), Display(Name = "Staff Name")]
+        public int StaffId { get; set; }
     }
 }

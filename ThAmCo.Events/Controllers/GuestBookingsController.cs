@@ -107,15 +107,15 @@ namespace ThAmCo.Events.Controllers
             {
                 return NotFound();
             }
-            ViewData["CustomerId"] = new SelectList((from c in _context.Customers
-                    select new
-                    {
-                        Id = c.Id,
-                        FullName = c.FirstName + " " + c.Surname
-                    }),
-                "Id",
-                "FullName", guestBooking.CustomerId);
-            ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", guestBooking.EventId);
+            //ViewData["CustomerId"] = new SelectList((from c in _context.Customers
+            //        select new
+            //        {
+            //            Id = c.Id,
+            //            FullName = c.FirstName + " " + c.Surname
+            //        }),
+            //    "Id",
+            //    "FullName", guestBooking.CustomerId);
+            //ViewData["EventId"] = new SelectList(_context.Events, "Id", "Title", guestBooking.EventId);
             return View(guestBooking);
         }
 

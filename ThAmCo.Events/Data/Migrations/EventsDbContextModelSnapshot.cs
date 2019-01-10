@@ -97,6 +97,23 @@ namespace ThAmCo.Events.Data.Migrations
                     );
                 });
 
+            modelBuilder.Entity("ThAmCo.Events.Data.Reservation", b =>
+                {
+                    b.Property<int>("StaffId");
+
+                    b.Property<int>("EventId");
+
+                    b.Property<string>("VenueCode");
+
+                    b.Property<string>("VenueName");
+
+                    b.HasKey("StaffId", "EventId");
+
+                    b.HasIndex("EventId");
+
+                    b.ToTable("Reservations");
+                });
+
             modelBuilder.Entity("ThAmCo.Events.Data.Staff", b =>
                 {
                     b.Property<int>("Id")
@@ -142,6 +159,19 @@ namespace ThAmCo.Events.Data.Migrations
                     b.HasOne("ThAmCo.Events.Data.Event", "Event")
                         .WithMany("Bookings")
                         .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+                });
+
+            modelBuilder.Entity("ThAmCo.Events.Data.Reservation", b =>
+                {
+                    b.HasOne("ThAmCo.Events.Data.Event", "Event")
+                        .WithMany()
+                        .HasForeignKey("EventId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.HasOne("ThAmCo.Events.Data.Staff", "Staff")
+                        .WithMany()
+                        .HasForeignKey("StaffId")
                         .OnDelete(DeleteBehavior.Cascade);
                 });
 
